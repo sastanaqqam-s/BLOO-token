@@ -1,0 +1,31 @@
+# Network Chain I
+
+REACT_APP_ChainId=80001
+
+# contract address for BLC Token
+ 
+REACT_APP_BLUE_TOKEN=0xb87bB8bfB608Bd1898d7C9F5d37CaA8F5628E0aE
+
+# contract address for Vesting Contract
+ 
+REACT_APP_VESTING=0x183A5f3d998A4295C236Df23db34548e13cF43Ab
+
+# Alchemy Api URl for Polygon Mumbai Network Network
+
+REACT_APP_ALCHEMY_POLYGON_NAME=Mumbai Polygon testnet
+REACT_APP_ALCHEMY_POLYGON_API_KEY=https://matic-mumbai.chainstacklabs.com
+REACT_APP_ALCHEMY_POLYGON_SITE_URL=https://mumbai.polygonscan.com/
+
+# Alchemy Api URl for Polygon Live Network Network
+
+REACT_APP_ALCHEMY_POLYGON_NAME_MAINNET=Polygon Mainnet
+REACT_APP_ALCHEMY_POLYGON_API_KEY_MAINNET=https://polygon-rpc.com
+REACT_APP_ALCHEMY_POLYGON_SITE_URL_MAINNET=https://polygonscan.com
+
+REACT_APP_ALCHEMY_POLYGON_SYMBOL=MATIC
+
+# Run on a 3000 port
+
+PORT=4000
+
+ 

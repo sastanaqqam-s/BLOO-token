@@ -1,0 +1,609 @@
+/** @format */
+/** @format */
+
+.dashboard-app {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 2;
+  -webkit-flex-grow: 2;
+  -ms-flex-positive: 2;
+  flex-grow: 2;
+  margin-top: 84px;
+}
+
+.dashboard-toolbar {
+  min-height: 84px;
+  display: flex;
+  align-items: center;
+  padding: 8px 27px;
+  max-width: fit-content;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+}
+
+@media (min-width: 992px) {
+  .dashboard-app {
+    margin-left: 280px;
+  }
+
+  .dashboard-compact .dashboard-app {
+    margin-left: 0;
+  }
+
+  .dashboard-toolbar {
+    left: 280px;
+  }
+
+  .dashboard-compact .dashboard-toolbar {
+    left: 0;
+  }
+
+  .connect-wallet {
+    left: 280px;
+  }
+
+  .dashboard-compact .connect-wallet {
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+}
+
+header.dashboard-toolbar .heading {
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 15px 0px;
+  }
+}
+
+.dashboard-app .dashboard-toolbar,
+.dashboard-app .connect-wallet {
+  position: absolute;
+}
+
+.dashboard-app .connect-wallet .walletButton {
+  box-shadow: 0px 0.1px 7px 0.5px #000;
+  color: var(--st-primary-text) !important;
+  border: solid 1px var(--st-primary-border);
+  padding: 2px 10px;
+  font-weight: 400;
+  line-height: 35px;
+  border-radius: 18px;
+  text-decoration: none;
+}
+
+.dashboard-app .connect-wallet .walletConnected {
+  box-shadow: 0px 0.1px 7px 0.5px green;
+  color: var(--st-primary-text) !important;
+  border: solid 1px var(--st-primary-border);
+  background-color: white;
+  font-weight: 400;
+  line-height: 35px;
+  border-radius: 18px;
+  text-decoration: none;
+}
+
+.dashboard .dashboard-app .infoIcon {
+  height: 20px;
+  cursor: pointer;
+  color: rgb(14 101 255) !important;
+  margin-bottom: 1px;
+}
+
+.dashboard .dashboard-app .accordian .infoIcon {
+  margin-left: 0.6rem;
+}
+
+.menu-toggle {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: rgb(32, 84, 162);
+  font-size: 20px;
+}
+
+.menu-toggle:hover,
+.menu-toggle:active,
+.menu-toggle:focus {
+  text-decoration: none;
+  color: rgb(32, 84, 162);
+}
+
+.menu-toggle i {
+  font-size: 20px;
+}
+
+@media (max-width: 992px) {
+  .dashboard-nav header .menu-toggle {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+}
+
+header.dashboard-toolbar .heading {
+  margin-top: 5px;
+}
+
+.connect-wallet {
+  min-height: 84px;
+  background-color: rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  padding: 8px 36px;
+  top: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.walletIcon {
+  margin-right: 7px;
+  margin-bottom: 2px;
+  color: rgb(32, 84, 162);
+}
+
+/**
+ * Side Bar
+ *
+ * @format
+ */
+
+.dashboard {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard .dashboard-app .infoIcon {
+  height: 20px;
+  cursor: pointer;
+  color: rgb(14 101 255) !important;
+  margin-bottom: 1px;
+}
+
+.dashboard .dashboard-app .accordian .infoIcon {
+  margin-left: 0.6rem;
+}
+
+.dashboard-nav {
+  min-width: 280px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow: auto;
+  background-color: #e1e9f2;
+  z-index: 1000;
+}
+
+.dashboard-compact .dashboard-nav {
+  display: none;
+}
+
+.dashboard-nav header {
+  min-height: 84px;
+  padding: 8px 27px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.dashboard-nav header .menu-toggle {
+  display: none;
+  margin-right: auto;
+}
+
+.dashboard-nav a {
+  color: #000000;
+  text-decoration: none;
+}
+
+.dashboard-nav a:hover {
+  text-decoration: none;
+}
+
+.dashboard-nav-dropdown.show .no-toggle a {
+  color: rgb(32, 84, 162);
+}
+
+.dashboard-nav-list {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.dashboard-nav-item {
+  min-height: 42px;
+  padding: 8px 20px 8px 25px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  letter-spacing: 0.02em;
+  transition: ease-out 0.5s;
+  cursor: pointer;
+}
+
+.dashboard-nav-item i {
+  width: 36px;
+  font-size: 19px;
+  margin-left: -40px;
+}
+
+.dashboard-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.dashboard-nav-dropdown.show {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle {
+  font-weight: 700;
+  color: rgb(32, 84, 162);
+}
+
+.dashboard-nav-dropdown.show .dashboard-nav-dropdown-item.show {
+  font-weight: 500;
+  color: rgb(32, 84, 162);
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-toggle:after {
+  -webkit-transform: none;
+  -o-transform: none;
+  transform: none;
+}
+
+.dashboard-nav-dropdown.show > .dashboard-nav-dropdown-menu {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.dashboard-nav-dropdown-toggle:after {
+  content: "";
+  margin-left: auto;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgba(81, 81, 81, 0.8);
+  -webkit-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.dashboard-nav .dashboard-nav-dropdown-toggle:after {
+  border-top-color: rgb(12 12 12);
+}
+
+.dashboard-nav-dropdown-toggle.no-toggle:after {
+  display: none;
+}
+
+.dashboard-nav-dropdown-menu {
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.dashboard-nav-dropdown-item {
+  min-height: 40px;
+  padding: 8px 20px 8px 60px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  transition: ease-out 0.5s;
+  text-decoration: none;
+}
+
+.dashboard-nav-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-nav .mobile-view {
+  display: none;
+}
+
+@media (max-width: 992px) {
+  .dashboard-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1070;
+  }
+
+  .dashboard-nav.mobile-show,
+  .dashboard-nav.mobile-show .mobile-view {
+    display: block;
+  }
+
+  .dashboard-nav header .menu-toggle {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+}
+
+.brand-logo {
+  font-family: "Nunito", sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  color: #000000;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.brand-logo:focus,
+.brand-logo:active,
+.brand-logo:hover {
+  color: #dbdbdb;
+  text-decoration: none;
+}
+
+.brand-logo i {
+  color: #d2d1d1;
+  font-size: 27px;
+  margin-right: 10px;
+}
+
+/* for content css */
+.dashboard-content {
+  -webkit-box-flex: 2;
+  -webkit-flex-grow: 2;
+  -ms-flex-positive: 2;
+  flex-grow: 2;
+  padding: 38px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 15px 0px;
+  }
+}
+
+@media (min-width: 992px) {
+  .dashboard-content {
+    left: 280px;
+  }
+}
+
+.dashboard-content.contract-detail {
+  max-height: 13rem;
+}
+
+.dashboard-content.accordian .transfer-token-accordian,
+.dashboard-content.accordian .transaction-history-accordian,
+.dashboard-content.accordian .check-balance-accordian,
+.dashboard-content.accordian .transfer-contract-accordian {
+  margin-bottom: 50px;
+}
+
+.dashboard-content.accordian .transfer-token-accordian .transfer-button,
+.dashboard-content.accordian .check-balance-accordian .balance-button,
+.dashboard-content.accordian .transfer-contract-accordian .transfer-button {
+  width: 9rem;
+  height: 2.7rem;
+  border-radius: 50px;
+  background-color: rgb(0, 134, 192);
+  color: white;
+  font-size: 15px;
+  border: none;
+  text-transform: none;
+}
+
+.dashboard .dashboard-content.contract-detail .card-body {
+  padding: 17px 0px 0px !important;
+}
+
+.dashboard .dashboard-content.contract-detail .card-body .cardCircle {
+  background-color: white;
+  height: 28px;
+  width: 28px;
+  border-radius: 15px;
+  text-align: center;
+  margin-bottom: 0.3rem;
+  color: rgb(32, 84, 162);
+}
+
+.dashboard-content.contract-detail .refreshIcon {
+  font-size: 19px !important;
+}
+
+.walletIcon {
+  margin-right: 7px;
+  margin-bottom: 2px;
+  color: rgb(32, 84, 162);
+}
+
+.card {
+  border: 0 !important;
+  box-shadow:
+    0 2px 5px 0 rgba(0, 0, 0, 0.16),
+    0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  font-weight: 400;
+}
+
+.dashboard-content.accordian .accordion-button.collapsed {
+  background-color: #e1e9f2;
+}
+
+.dashboard-content.accordian
+  .transaction-history-accordian
+  table.dataTable
+  thead[data-test="table-foot"] {
+  display: none;
+}
+
+.contract-detail .large-card-box-spacing {
+  width: 17% !important;
+}
+
+.contract-detail .big-card-box-spacing {
+  width: 16% !important;
+}
+
+.contract-detail .small-card-box-spacing {
+  width: 13% !important;
+}
+
+.contract-detail .cardColor0 {
+  background-color: rgb(188 209 233) !important;
+}
+
+.contract-detail .cardColor1 {
+  background-color: rgb(225, 233, 242) !important;
+}
+
+.contract-detail .cardColor2 {
+  background-color: rgb(239, 242, 226) !important;
+}
+
+.contract-detail .cardColor3 {
+  background-color: rgb(237, 226, 242) !important;
+}
+
+.contract-detail .cardColor4 {
+  background-color: rgb(225, 242, 230) !important;
+}
+
+.contract-detail .cardColor5 {
+  background-color: rgb(227, 225, 242) !important;
+}
+
+/* toggle Css */
+
+.startDistribution .custom-toggle {
+  width: 56px;
+  height: 26px;
+  border-radius: 15px;
+  background-color: #ddd;
+  position: relative;
+  cursor: pointer;
+}
+
+.startDistribution .toggle-button {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(23%, -50%);
+  transition: transform 0.3s ease;
+}
+
+.startDistribution .custom-toggle.active .toggle-button {
+  transform: translate(32px, -50%);
+}
+
+/* Additional styles for a better visual appearance */
+.startDistribution .custom-toggle.active {
+  background-color: #74a1d5; /* Green when active */
+}
+
+.startDistribution .toggle-button::before {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: #ccc;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.startDistribution .custom-toggle.active .toggle-button::before {
+  background-color: #fff;
+}
+
+.connect-wallet button select,
+.connect-wallet button select:focus-visible {
+  border: none;
+  background: none;
+  outline: none;
+}

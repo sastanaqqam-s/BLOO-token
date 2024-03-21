@@ -1,0 +1,263 @@
+/** @format */
+
+:root {
+  --font-family-sans-serif: "Open Sans", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+*,
+*::before,
+*::after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+} */
+
+nav {
+  display: block;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Open Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji" !important;
+  font-size: 1rem;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  color: #000000;
+  text-align: left;
+  background-color: #e9edf4;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+a {
+  color: #3f84fc;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+a:hover {
+  color: #0458eb;
+  text-decoration: underline;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Scroller Design */
+body::-webkit-scrollbar {
+  width: 12px; /* width of the entire scrollbar */
+}
+body::-webkit-scrollbar-track {
+  background: #e1e9f2; /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #a7a7a7; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid #e1e9f2; /* creates padding around scroll thumb */
+}
+
+/* Scroller Design */
+.dashboard-nav::-webkit-scrollbar {
+  width: 12px; /* width of the entire scrollbar */
+}
+.dashboard-nav::-webkit-scrollbar-track {
+  background: #e1e9f2; /* color of the tracking area */
+}
+
+.dashboard-nav::-webkit-scrollbar-thumb {
+  background-color: #a7a7a7; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid #e1e9f2; /* creates padding around scroll thumb */
+}
+
+.dashboard-nav::-webkit-scrollbar-thumb {
+  background-color: #a7a7a7;
+  border-radius: 20px;
+  border: 3px solid #e1e9f2;
+}
+
+.dashboard-nav ::-webkit-scrollbar-track {
+  background: #e1e9f2;
+}
+.dashboard-nav ::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* swal button center */
+.swal-footer {
+  text-align: center;
+}
+
+/* // loader classes // */
+.mainLoader.loader {
+  color: #fff;
+  position: fixed;
+  box-sizing: border-box;
+  left: -9999px;
+  top: -9999px;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  z-index: 999999;
+}
+.mainLoader.loader:after,
+.mainLoader.loader:before {
+  box-sizing: border-box;
+  display: none;
+}
+.mainLoader.loader.is-active {
+  background-color: rgba(0, 0, 0, 0.85);
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+.mainLoader.loader.is-active:after,
+.mainLoader.loader.is-active:before {
+  display: block;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+.mainLoader.loader[data-text]:before {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  color: currentColor;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: center;
+  width: 100%;
+  font-size: 20px;
+}
+.mainLoader.loader[data-text=""]:before {
+  content: "Loading";
+}
+.mainLoader.loader[data-text]:not([data-text=""]):before {
+  content: attr(data-text);
+}
+.mainLoader.loader[data-text][data-blink]:before {
+  animation: blink 1s linear infinite alternate;
+}
+.mainLoader.loader-default[data-text]:before {
+  top: calc(50% - 63px);
+}
+.mainLoader.loader-default:after {
+  content: "";
+  position: fixed;
+  width: 48px;
+  height: 48px;
+  border: 8px solid #fff;
+  border-left-color: transparent;
+  border-radius: 50%;
+  top: calc(50% - 24px);
+  left: calc(50% - 24px);
+  animation: rotation 1s linear infinite;
+}
+.mainLoader.loader-default[data-half]:after {
+  border-right-color: transparent;
+}
+.mainLoader.loader-default[data-inverse]:after {
+  animation-direction: reverse;
+}
+
+/* Modal */
+
+.modal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  text-align: center;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  margin: auto;
+  padding: 35px;
+  border: 1px solid #888 !important;
+  width: 40% !important;
+  border-radius: 20px !important;
+}
+
+.modal .spinner-border {
+  color: var(--bs-link-hover-color);
+}
+
+.active {
+  color: #0458eb !important;
+}
