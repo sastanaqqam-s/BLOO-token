@@ -1,0 +1,57 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.18;
+
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./Interface/IBLUEToken.sol";
+
+contract BLUEToken is IBLUEToken, ERC20 {
+    // store owner address
+    address public owner = msg.sender;
+
+    // get log of old and new contract owner
+    event TransferOwnership(address _oldOwner, address _newOwner);
+
+    // Total 5000000000 * 1e18 Token can be created
+    uint256 public constant max_supply = 5000000000 * 1e18;
+
+    address public vestingContract;
+
+    modifier onlyOwner() {
+        require(
+            owner == msg.sender,
+            "BLUE: Only Owner can perform this action!"
+        );
+        _;
+    }
+
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC20(name_, symbol_) {}
+
+    function mint(address walletAddress, uint256 amount) public {
+        require(
+            vestingContract == msg.sender,
+            "BLUE: Only Vesting Contract can do this action!"
+        );
+        // not minting  token more than max supply
+
+        require(totalSupply() + amount <= max_supply, "BLUE: SUPPLY_OVERFLOW!");
+        _mint(walletAddress, amount);
+    }
+
+    // function to transfer contract ownership to new address
+    function transferOwnership(address newOwner) public onlyOwner {
+        require(newOwner != address(0), "BLUE: Invalid address!");
+        owner = newOwner;
+        emit TransferOwnership(msg.sender, newOwner);
+    }
+
+    // function to transfer contract ownership to new address
+    function setVestingcontract(address newVestingContract) public onlyOwner {
+        require(newVestingContract != address(0), "BLUE: Invalid address!");
+        vestingContract = newVestingContract;
+    }
+}
