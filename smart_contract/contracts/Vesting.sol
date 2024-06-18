@@ -17,8 +17,7 @@ contract Vesting is Inventory, ReentrancyGuard {
     // Event to log token transfers
     event TokenTransfer(address from, address to, uint amount);
 
-    // Constant defining the release interval in seconds
-    uint256 private constant releaseInterval = 3600;
+    uint256 private constant releaseInterval = 30 days;
 
     // Array to store user addresses and token details transferred by admins
     TokenHolders[] public tokenHolders;

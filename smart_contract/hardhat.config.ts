@@ -39,8 +39,8 @@ const config: HardhatUserConfig = {
     },
     hardhat: {},
 
-    polygon_mumbai: {
-      url: process.env.ALCHEMY_POLYGON_API_KEY,
+    amoy: {
+      url: process.env.ALCHEMY_AMOY_API_KEY,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },

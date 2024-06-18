@@ -8,5 +8,8 @@ typechain-types
 # Hardhat files
 cache
 artifacts
+bin
+.vscode
 
+.openzeppelin
 package-lock.json

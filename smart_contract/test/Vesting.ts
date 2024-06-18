@@ -330,7 +330,7 @@ describe("Vesting Contract", () => {
       await vesting.connect(deployer).start();
 
       for (let i = 1; i <= maxVestingMonth + 1; i++) {
-        await time.increaseTo(forSecond(3600 * i));
+        await time.increaseTo(forSecond(2592000 * i));
         expectedTotalTransferAmount = expectedTotalTransferAmount.add(
           await transfer(),
         );
