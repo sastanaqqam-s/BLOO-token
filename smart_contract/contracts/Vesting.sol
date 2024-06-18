@@ -59,14 +59,19 @@ contract Vesting is Inventory {
 
     // Internal function to release initial genesis amount of tokens
     function _releasedGenesisAmt() private {
+        uint localTotalUnlockedTokens;
+        uint localTotalRemainingTokens;
+
         for (uint i = 0; i < categories.length; ) {
             unchecked {
-                totalUnlockedTokens += categories[i].genesisAmount;
-                totalRemainingTokens += categories[i].genesisAmount;
-
+                localTotalUnlockedTokens += categories[i].genesisAmount;
+                localTotalRemainingTokens += categories[i].genesisAmount;
                 i++;
             }
         }
+
+        totalUnlockedTokens += localTotalUnlockedTokens;
+        totalRemainingTokens += localTotalRemainingTokens;
     }
 
     // Function to transfer tokens to multiple users, only callable by whitelisted addresses
@@ -115,6 +120,9 @@ contract Vesting is Inventory {
 
     // Internal function to check and release tokens according to vested periods
     function _checkVestedPeriod() private {
+        uint localTotalUnlockedTokens;
+        uint localTotalRemainingTokens;
+
         for (uint i = 0; i < categories.length; ) {
             Category memory c1 = categories[i];
             uint cliffMonth = c1.lockedPeriod;
@@ -134,8 +142,8 @@ contract Vesting is Inventory {
 
                 claimedMonth[i] = totalCompletedMonths;
 
-                totalUnlockedTokens += unlockingToken;
-                totalRemainingTokens += unlockingToken;
+                localTotalUnlockedTokens += unlockingToken;
+                localTotalRemainingTokens += unlockingToken;
                 c1.remainReleasedToken -= unlockingToken;
 
                 categories[i] = c1;
@@ -145,6 +153,9 @@ contract Vesting is Inventory {
                 i++;
             }
         }
+
+        totalUnlockedTokens += localTotalUnlockedTokens;
+        totalRemainingTokens += localTotalRemainingTokens;
     }
 
     // Internal function to mint tokens to a user
