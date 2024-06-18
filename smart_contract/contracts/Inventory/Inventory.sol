@@ -21,13 +21,13 @@ struct Category {
 contract Inventory {
     IBLUEToken public feeToken; // Interface for the fee token contract
 
-    uint public startAt = 0; // Start time for the distribution
+    uint public startAt; // Start time for the distribution
 
-    uint public totalUnlockedTokens = 0; // Total unlocked tokens across all categories
+    uint public totalUnlockedTokens; // Total unlocked tokens across all categories
 
-    uint public totalRemainingTokens = 0; // Total remaining tokens across all categories
+    uint public totalRemainingTokens; // Total remaining tokens across all categories
 
-    uint public totalCompletedMonths = 0; // Total completed months since start
+    uint public totalCompletedMonths; // Total completed months since start
 
     mapping(uint => uint) claimedMonth; // Mapping to track claimed months for each category
 
