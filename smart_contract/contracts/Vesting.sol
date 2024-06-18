@@ -151,10 +151,11 @@ contract Vesting is Inventory {
     function _mintTokens(address from, address to, uint256 amount) private {
         totalRemainingTokens -= amount;
 
-        feeToken.mint(to, amount);
-
         // Log token transfer
         tokenHolders.push(TokenHolders(to, amount, block.timestamp));
+
+        feeToken.mint(to, amount);
+
         emit TokenTransfer(from, to, amount);
     }
 
