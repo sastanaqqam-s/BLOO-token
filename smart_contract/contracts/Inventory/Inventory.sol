@@ -76,7 +76,7 @@ contract Inventory {
     }
 
     // Function to get details of all categories
-    function getCategoryDetail() public view returns (Category[] memory) {
+    function getCategoryDetail() external view returns (Category[] memory) {
         return categories;
     }
 }

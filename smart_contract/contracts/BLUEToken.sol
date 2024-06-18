@@ -35,7 +35,7 @@ contract BLUEToken is IBLUEToken, ERC20 {
         max_supply = max_supply_;
     }
 
-    function mint(address walletAddress, uint256 amount) public {
+    function mint(address walletAddress, uint256 amount) external {
         require(
             vestingContract == msg.sender,
             "BLUE: Only Vesting Contract can do this action!"
@@ -47,7 +47,7 @@ contract BLUEToken is IBLUEToken, ERC20 {
     }
 
     // function to transfer contract ownership to new address
-    function transferOwnership(address newOwner) public onlyOwner {
+    function transferOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "BLUE: Invalid address!");
         owner = newOwner;
         emit TransferOwnership(msg.sender, newOwner);

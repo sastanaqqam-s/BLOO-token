@@ -47,7 +47,7 @@ contract Vesting is Inventory {
     }
 
     // Function  to start the tokenization process,  only callable by whitelisted addresses
-    function start() public onlyWhiteListed {
+    function start() external onlyWhiteListed {
         require(startAt == 0, "Vesting: Tokenization already Started!");
 
         // Set the start time of tokenization
@@ -159,7 +159,7 @@ contract Vesting is Inventory {
     }
 
     // Function to get all users with their addresses and total token amounts
-    function allusers() public view returns (TokenHolders[] memory) {
+    function allusers() external view returns (TokenHolders[] memory) {
         return tokenHolders;
     }
 }
