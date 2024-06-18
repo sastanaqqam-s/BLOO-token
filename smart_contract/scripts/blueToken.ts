@@ -1,12 +1,13 @@
 /** @format */
 
 import { ethers } from "hardhat";
+import { decimal } from "../test";
 const hre = require("hardhat");
 
 async function main() {
   //Deploy BasicContract Contract
   const Token = await ethers.getContractFactory("BLUEToken");
-  const token = await Token.deploy();
+  const token = await Token.deploy("BLUE token", "BLUE", decimal(5000000000));
 
   await token.deployTransaction.wait(5);
 

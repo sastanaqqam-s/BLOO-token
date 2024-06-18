@@ -15,8 +15,7 @@ contract BLUEToken is IBLUEToken, ERC20 {
     // get log of old and new contract owner
     event TransferOwnership(address _oldOwner, address _newOwner);
 
-    // Total 5000000000 * 1e18 Token can be created
-    uint256 public constant max_supply = 5000000000 * 1e18;
+    uint256 public immutable max_supply;
 
     address public vestingContract;
 
@@ -30,8 +29,11 @@ contract BLUEToken is IBLUEToken, ERC20 {
 
     constructor(
         string memory name_,
-        string memory symbol_
-    ) ERC20(name_, symbol_) {}
+        string memory symbol_,
+        uint256 max_supply_
+    ) ERC20(name_, symbol_) {
+        max_supply = max_supply_;
+    }
 
     function mint(address walletAddress, uint256 amount) public {
         require(

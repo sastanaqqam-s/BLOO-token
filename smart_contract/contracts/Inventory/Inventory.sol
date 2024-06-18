@@ -49,7 +49,10 @@ contract Inventory {
 
     // Internal function to set category details
     function setCategory(Category[] memory data) internal {
+        uint totalSupply;
         for (uint i = 0; i < data.length; i++) {
+            totalSupply += data[i].genesisAmount + data[i].releasedToken;
+
             categories.push(
                 Category(
                     data[i].categoryName,
@@ -66,6 +69,10 @@ contract Inventory {
             );
 
             claimedMonth[i] = data[i].lockedPeriod; // Initialize claimed month for each category
+        }
+
+        if (totalSupply != feeToken.max_supply()) {
+            revert("Vesting: Total tokens exceeds max supply!");
         }
     }
 

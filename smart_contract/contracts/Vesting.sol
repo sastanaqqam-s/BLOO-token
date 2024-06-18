@@ -28,10 +28,18 @@ contract Vesting is Inventory, ReentrancyGuard {
         address[] memory mpcAddresses,
         Category[] memory data
     ) {
+        if (address(_feeToken) == address(0)) {
+            revert("Vesting: Invalid FeeToken Address!");
+        }
+
         feeToken = _feeToken;
 
         // Add MPC  addresses to the whitelist
         for (uint i = 0; i < mpcAddresses.length; i++) {
+            if (mpcAddresses[i] == address(0)) {
+                revert("Vesting: Invalid MPC Address!");
+            }
+
             mpcAddress.push(mpcAddresses[i]);
             whiteListed[mpcAddresses[i]] = true;
         }
@@ -43,7 +51,6 @@ contract Vesting is Inventory, ReentrancyGuard {
     // Function  to start the tokenization process,  only callable by whitelisted addresses
     function start() public onlyWhiteListed {
         require(startAt == 0, "Vesting: Tokenization already Started!");
-        require(categories.length > 0, "Vesting: Category not Set!");
 
         // Set the start time of tokenization
         startAt = block.timestamp;

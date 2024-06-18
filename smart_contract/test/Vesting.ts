@@ -1,13 +1,229 @@
 /** @format */
 import { time, loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
-import { BigNumberish } from "ethers";
+import { BigNumber, BigNumberish } from "ethers";
 import { ethers } from "hardhat";
 import { basicMethod, decimal, forSecond, big } from "./index";
 import { deploy } from "@openzeppelin/hardhat-upgrades/dist/utils";
 import { exit } from "process";
 
 describe("Vesting Contract", () => {
+  describe("Should check values at Deployment of Vesting Contract", () => {
+    it("should check fee token address invalid", async () => {
+      const { deployer, token, category } = await loadFixture(basicMethod);
+
+      // Deploy Vesting Contract
+      const Vesting = await ethers.getContractFactory("Vesting");
+
+      await expect(
+        Vesting.deploy(
+          "0x0000000000000000000000000000000000000000",
+          [deployer.address],
+          category,
+        ),
+      ).to.be.revertedWith("Vesting: Invalid FeeToken Address!");
+    });
+
+    it("should check mpc wallet address invalid", async () => {
+      const { deployer, token, category } = await loadFixture(basicMethod);
+
+      // Deploy Vesting Contract
+      const Vesting = await ethers.getContractFactory("Vesting");
+
+      await expect(
+        Vesting.deploy(
+          token.address,
+          ["0x0000000000000000000000000000000000000000"],
+          category,
+        ),
+      ).to.be.revertedWith("Vesting: Invalid MPC Address!");
+    });
+
+    it("should check token supply limit exceed", async () => {
+      const { deployer, token } = await loadFixture(basicMethod);
+
+      var category = [
+        {
+          categoryName: "Team",
+          lockedPeriod: 12,
+          vestingPeriod: 24,
+          percentageHold: 1500,
+          totalTokens: decimal(750000000),
+          genesisPercentage: BigNumber.from(0),
+          genesisAmount: decimal(100),
+          releasedToken: decimal(750000000),
+          avgReleasedToken: decimal(31250000),
+          remainReleasedToken: decimal(750000000),
+        },
+        {
+          categoryName: "Advisors",
+          lockedPeriod: 6,
+          vestingPeriod: 24,
+          percentageHold: 500,
+          totalTokens: decimal(250000000),
+          genesisPercentage: 0,
+          genesisAmount: decimal(0),
+          releasedToken: decimal(250000000),
+          avgReleasedToken: decimal(10416666),
+          remainReleasedToken: decimal(250000000),
+        },
+        {
+          categoryName: "Partners",
+          lockedPeriod: 1,
+          vestingPeriod: 24,
+          percentageHold: 1000,
+          totalTokens: decimal(500000000),
+          genesisPercentage: 0,
+          genesisAmount: decimal(0),
+          releasedToken: decimal(500000000),
+          avgReleasedToken: decimal(20833333),
+          remainReleasedToken: decimal(500000000),
+        },
+        {
+          categoryName: "Special Private Sale",
+          lockedPeriod: 6,
+          vestingPeriod: 24,
+          percentageHold: 300,
+          totalTokens: decimal(150000000),
+          genesisPercentage: 0,
+          genesisAmount: decimal(0),
+          releasedToken: decimal(150000000),
+          avgReleasedToken: decimal(6250000),
+          remainReleasedToken: decimal(150000000),
+        },
+        {
+          categoryName: "Private Sale",
+          lockedPeriod: 12,
+          vestingPeriod: 24,
+          percentageHold: 900,
+          totalTokens: decimal(450000000),
+          genesisPercentage: 0,
+          genesisAmount: decimal(0),
+          releasedToken: decimal(450000000),
+          avgReleasedToken: decimal(18750000),
+          remainReleasedToken: decimal(450000000),
+        },
+        {
+          categoryName: "Public Launch IDO",
+          lockedPeriod: 0,
+          vestingPeriod: 6,
+          percentageHold: 70,
+          totalTokens: decimal(35000000),
+          genesisPercentage: 2500,
+          genesisAmount: decimal(8750000),
+          releasedToken: decimal(26250000),
+          avgReleasedToken: decimal(4375000),
+          remainReleasedToken: decimal(26250000),
+        },
+        {
+          categoryName: "Public Launch IEO",
+          lockedPeriod: 0,
+          vestingPeriod: 0,
+          percentageHold: 130,
+          totalTokens: decimal(65000000),
+          genesisPercentage: 10000,
+          genesisAmount: decimal(65000000),
+          releasedToken: decimal(0),
+          avgReleasedToken: decimal(0),
+          remainReleasedToken: decimal(0),
+        },
+        {
+          categoryName: "Exchanges (Liquidity)",
+          lockedPeriod: 0,
+          vestingPeriod: 3,
+          percentageHold: 300,
+          totalTokens: decimal(150000000),
+          genesisPercentage: 2000,
+          genesisAmount: decimal(30000000),
+          releasedToken: decimal(120000000),
+          avgReleasedToken: decimal(40000000),
+          remainReleasedToken: decimal(120000000),
+        },
+        {
+          categoryName: "Airdrop Rewards",
+          lockedPeriod: 1,
+          vestingPeriod: 12,
+          percentageHold: 300,
+          totalTokens: decimal(150000000),
+          genesisPercentage: 100,
+          genesisAmount: decimal(1500000),
+          releasedToken: decimal(148500000),
+          avgReleasedToken: decimal(12375000),
+          remainReleasedToken: decimal(148500000),
+        },
+        {
+          categoryName: "Incentive Rewards",
+          lockedPeriod: 1,
+          vestingPeriod: 48,
+          percentageHold: 2000,
+          totalTokens: decimal(1000000000),
+          genesisPercentage: 100,
+          genesisAmount: decimal(10000000),
+          releasedToken: decimal(990000000),
+          avgReleasedToken: decimal(20625000),
+          remainReleasedToken: decimal(990000000),
+        },
+        {
+          categoryName: "Treasury",
+          lockedPeriod: 1,
+          vestingPeriod: 48,
+          percentageHold: 2000,
+          totalTokens: decimal(1000000000),
+          genesisPercentage: 0,
+          genesisAmount: decimal(0),
+          releasedToken: decimal(1000000000),
+          avgReleasedToken: decimal(20833333),
+          remainReleasedToken: decimal(1000000000),
+        },
+        {
+          categoryName: "Reserve Fund",
+          lockedPeriod: 1,
+          vestingPeriod: 12,
+          percentageHold: 1000,
+          totalTokens: decimal(500000000),
+          genesisPercentage: 300,
+          genesisAmount: decimal(15000000),
+          releasedToken: decimal(485000000),
+          avgReleasedToken: decimal(40416666),
+          remainReleasedToken: decimal(485000000),
+        },
+      ];
+
+      // Deploy Vesting Contract
+      const Vesting = await ethers.getContractFactory("Vesting");
+
+      await expect(
+        Vesting.deploy(token.address, [deployer.address], category),
+      ).to.be.revertedWith("Vesting: Total tokens exceeds max supply!");
+    });
+
+    it("should check token supply limit exceed", async () => {
+      const { deployer, token } = await loadFixture(basicMethod);
+
+      var category = [
+        {
+          categoryName: "Team",
+          lockedPeriod: 12,
+          vestingPeriod: 24,
+          percentageHold: 1500,
+          totalTokens: decimal(0),
+          genesisPercentage: BigNumber.from(0),
+          genesisAmount: decimal(0),
+          releasedToken: decimal(0),
+          avgReleasedToken: decimal(0),
+          remainReleasedToken: decimal(0),
+        },
+      ];
+
+      // Deploy Vesting Contract
+      const Vesting = await ethers.getContractFactory("Vesting");
+
+      await expect(
+        Vesting.deploy(token.address, [deployer.address], category),
+      ).to.be.revertedWith("Vesting: Total tokens exceeds max supply!");
+    });
+  });
+
   describe("Should update values at Deployment of Vesting Contract", () => {
     it("Should check updated whiteListed Address", async () => {
       const { deployer, vesting } = await loadFixture(basicMethod);
@@ -76,35 +292,6 @@ describe("Vesting Contract", () => {
         await vesting.connect(deployer).start();
         await expect(vesting.connect(deployer).start()).to.revertedWith(
           "Vesting: Tokenization already Started!",
-        );
-      });
-
-      it("Should check Category is Set or not", async () => {
-        const { deployer, admins, token, category } = await loadFixture(
-          basicMethod,
-        );
-        var categories: {
-          categoryName: string;
-          lockedPeriod: BigNumberish;
-          vestingPeriod: BigNumberish;
-          percentageHold: BigNumberish;
-          totalTokens: BigNumberish;
-          genesisPercentage: BigNumberish;
-          genesisAmount: BigNumberish;
-          releasedToken: BigNumberish;
-          avgReleasedToken: BigNumberish;
-          remainReleasedToken: BigNumberish;
-        }[] = [];
-        // Deploy Vesting Contract
-        const Vesting = await ethers.getContractFactory("Vesting");
-        const reVesting = await Vesting.deploy(
-          token.address,
-          [deployer.address],
-          categories,
-        );
-
-        await expect(reVesting.start()).to.be.revertedWith(
-          "Vesting: Category not Set!",
         );
       });
     });

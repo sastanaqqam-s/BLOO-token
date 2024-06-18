@@ -178,7 +178,7 @@ export async function basicMethod() {
 
   // Deploy Token Contract
   const Token = await ethers.getContractFactory("BLUEToken");
-  const token = await Token.deploy("BLUE token", "BLUE");
+  const token = await Token.deploy("BLUE token", "BLUE", decimal(5000000000));
 
   // Deploy Vesting Contract
   const Vesting = await ethers.getContractFactory("Vesting");
@@ -195,8 +195,8 @@ export async function basicMethod() {
     token,
     admins,
     vesting,
-    category,  
-    categories  
+    category,
+    categories,
   };
 }
 

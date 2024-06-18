@@ -9,7 +9,11 @@ describe("BLUETOKEN Contract", () => {
     it("Deployment should assign the correct initial values", async () => {
       const { deployer } = await loadFixture(basicMethod);
       const Tokens = await ethers.getContractFactory("BLUEToken");
-      const tokens = await Tokens.deploy("BLUE token", "BLUE");
+      const tokens = await Tokens.deploy(
+        "BLUE token",
+        "BLUE",
+        decimal(5000000000),
+      );
 
       expect(await tokens.name()).to.equal("BLUE token");
       expect(await tokens.symbol()).to.equal("BLUE");
@@ -48,7 +52,11 @@ describe("BLUETOKEN Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy("BLUE token", "BLUE");
+      const token = await Token.deploy(
+        "BLUE token",
+        "BLUE",
+        decimal(5000000000),
+      );
 
       await token.setVestingcontract(deployer.address);
 
