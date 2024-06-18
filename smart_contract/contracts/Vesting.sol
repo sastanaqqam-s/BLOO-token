@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.18;
+pragma solidity 0.8.20;
 
-import "hardhat/console.sol";
 import "./Inventory/Inventory.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 // Struct to store the address and token details of transfers made by the owner
 struct TokenHolders {
@@ -12,8 +10,8 @@ struct TokenHolders {
     uint time; // Timestamp of the transfer
 }
 
-// Vesting contract inheriting from Inventory and ReentrancyGuard
-contract Vesting is Inventory, ReentrancyGuard {
+// Vesting contract inheriting from Inventory
+contract Vesting is Inventory {
     // Event to log token transfers
     event TokenTransfer(address from, address to, uint amount);
 
@@ -90,7 +88,7 @@ contract Vesting is Inventory, ReentrancyGuard {
     function transferToken(
         address userAddress,
         uint tokenAmount
-    ) public onlyWhiteListed nonReentrant {
+    ) public onlyWhiteListed {
         calulateUnlockedToken();
         require(startAt > 0, "Vesting: Distribution not started yet!");
         require(tokenAmount > 0, "Vesting: Invalid tokenAmount");

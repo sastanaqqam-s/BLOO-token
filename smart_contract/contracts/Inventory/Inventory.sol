@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.18;
+pragma solidity 0.8.20;
 
 // Uncomment this line to use console.log
-import "hardhat/console.sol";
 import "../Interface/IBLUEToken.sol";
 
 // Struct to define the properties of each category
