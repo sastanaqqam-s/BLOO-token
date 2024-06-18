@@ -14,7 +14,7 @@ struct Category {
     uint totalTokens; // Total tokens in this category
     uint genesisPercentage; // Percentage of tokens released at genesis
     uint genesisAmount; // Amount of tokens released at genesis
-    uint releasedToken; // Total tokens released so far
+    uint releasedToken; // This is used to gather information to determine the total amount of tokens that will be released after the locked period ends (according to the vesting schedule).
     uint avgReleasedToken; // Average tokens released per period
     uint remainReleasedToken; // Remaining tokens to be released
 }
