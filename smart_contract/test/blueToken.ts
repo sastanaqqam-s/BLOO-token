@@ -19,30 +19,10 @@ describe("BLUETOKEN Contract", () => {
   });
 
   describe("Mint Method", () => {
-    describe("Revert", () => {
-      it("should check if caller is vesting contract or not", async () => {
-        const { admins, token } = await loadFixture(basicMethod);
-        await expect(token.mint(admins[0].address, 1)).to.be.revertedWith(
-          "BLUE: Only Vesting Contract can do this action!"
-        );
-      });
-
-      it("should check Max supply overflow" , async () => {
-        const { token, admins } = await loadFixture(basicMethod);
-        const tokenAmount = decimal(3000000000)  
-         
-        await token.setVestingcontract(admins[2].address);
-        await token.connect(admins[2]).mint(admins[3].address, tokenAmount);  
-
-        await expect(token.connect(admins[2]).mint(admins[3].address, tokenAmount)).to.be.revertedWith(
-          "BLUE: SUPPLY_OVERFLOW!");
-      }); 
-
-    });
     it("should mint tokens by vesting contract", async () => {
       const tokenAmount = decimal(1);
       const { deployer, token, vesting, admins } = await loadFixture(
-        basicMethod
+        basicMethod,
       );
       await vesting.connect(deployer).start();
       const BeforeRemainingTokens = await vesting.totalRemainingTokens();
@@ -50,10 +30,31 @@ describe("BLUETOKEN Contract", () => {
       await vesting.transferToken(admins[0].address, tokenAmount);
 
       expect(await vesting.totalRemainingTokens()).to.be.equal(
-        BeforeRemainingTokens.sub(tokenAmount)
+        BeforeRemainingTokens.sub(tokenAmount),
       );
       expect(await vesting.totalCompletedMonths()).to.be.equal(0);
       expect(await token.balanceOf(admins[0].address)).be.equal(tokenAmount);
+    });
+
+    it("should check if caller is vesting contract or not", async () => {
+      const { admins, token } = await loadFixture(basicMethod);
+      await expect(token.mint(admins[0].address, 1)).to.be.revertedWith(
+        "BLUE: Only Vesting Contract can do this action!",
+      );
+    });
+
+    it("should check if caller is vesting contract or not", async () => {
+      const { deployer } = await loadFixture(basicMethod);
+
+      // Deploy Token Contract
+      const Token = await ethers.getContractFactory("BLUEToken");
+      const token = await Token.deploy("BLUE token", "BLUE");
+
+      await token.setVestingcontract(deployer.address);
+
+      await expect(
+        token.mint(deployer.address, decimal(5000000001)),
+      ).to.be.revertedWith("BLUE: SUPPLY_OVERFLOW!");
     });
   });
 
@@ -63,15 +64,14 @@ describe("BLUETOKEN Contract", () => {
         const { admins, token } = await loadFixture(basicMethod);
 
         await expect(
-          token.connect(admins[0]).transferOwnership(admins[0].address)
+          token.connect(admins[0]).transferOwnership(admins[0].address),
         ).to.be.revertedWith("BLUE: Only Owner can perform this action!");
       });
       it("should check invalid address", async () => {
-    
         const { token } = await loadFixture(basicMethod);
-        await expect(token.transferOwnership(ethers.constants.AddressZero)).to.be.revertedWith(
-          "BLUE: Invalid address!"
-        );
+        await expect(
+          token.transferOwnership(ethers.constants.AddressZero),
+        ).to.be.revertedWith("BLUE: Invalid address!");
       });
     });
     it("should transfer ownership", async () => {
@@ -96,41 +96,44 @@ describe("BLUETOKEN Contract", () => {
   });
 
   describe("setVestingcontract method", () => {
-    describe("revert", () => {
-      it("should check if caller is owner or not", async () => {
-        const { deployer, admins, token,categories } = await loadFixture(basicMethod);
-     
-        const Vesting = await ethers.getContractFactory("Vesting");
-        const reVestingContract = await Vesting.deploy(
-          token.address,
-          [deployer.address],
-          categories
-        );
+    it("should check vesting contract address", async () => {
+      const { token, vesting } = await loadFixture(basicMethod);
+
+      expect(await token.vestingContract()).to.equal(vesting.address);
+    });
+
+    it("should check initialized status", async () => {
+      const { token } = await loadFixture(basicMethod);
+
+      expect(await token.initialized()).to.equal(true);
+    });
+
+    describe("Revert Condition in Set Vesting Contract method", () => {
+      it("should check only owner can set vesting contract", async () => {
+        const { token, admins } = await loadFixture(basicMethod);
+
         await expect(
-          token.connect(admins[0]).setVestingcontract(reVestingContract.address)
+          token.connect(admins[0]).setVestingcontract(admins[1].address),
         ).to.be.revertedWith("BLUE: Only Owner can perform this action!");
       });
 
-      it("should check invalid address", async () => {
-        const { token } = await loadFixture(basicMethod);
-       
-        await expect(token.setVestingcontract(ethers.constants.AddressZero)).to.be.revertedWith(
-          "BLUE: Invalid address!"
-        );
-      });
-    });
-    it("succefully set Vesting Contract address", async () => {
-      const { deployer, token, categories } = await loadFixture(basicMethod);
-     
-      const Vesting = await ethers.getContractFactory("Vesting");
-      const reVestingContract = await Vesting.deploy(
-        token.address,
-        [deployer.address],
-        categories
-      );
+      it("should check vesting contract address already Initialized", async () => {
+        const { token, deployer } = await loadFixture(basicMethod);
 
-      await token.setVestingcontract(reVestingContract.address);
-      expect(await token.vestingContract()).to.be.equal(reVestingContract.address);
+        await expect(
+          token.connect(deployer).setVestingcontract(deployer.address),
+        ).to.be.revertedWith("BLUE: Vesting Contract Already Initialized!");
+      });
+
+      it("should check vesting contract address is invalid", async () => {
+        const { token, deployer } = await loadFixture(basicMethod);
+
+        await expect(
+          token
+            .connect(deployer)
+            .setVestingcontract("0x0000000000000000000000000000000000000000"),
+        ).to.be.revertedWith("BLUE: Invalid Address!");
+      });
     });
   });
 });

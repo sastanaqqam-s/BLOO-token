@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Interface/IBLUEToken.sol";
 
 contract BLUEToken is IBLUEToken, ERC20 {
+    bool public initialized;
+
     // store owner address
     address public owner = msg.sender;
 
@@ -50,8 +52,15 @@ contract BLUEToken is IBLUEToken, ERC20 {
     }
 
     // function to transfer contract ownership to new address
-    function setVestingcontract(address newVestingContract) public onlyOwner {
-        require(newVestingContract != address(0), "BLUE: Invalid address!");
+    function setVestingcontract(address newVestingContract) external onlyOwner {
+        if (newVestingContract == address(0)) {
+            revert("BLUE: Invalid Address!");
+        }
+
+        require(!initialized, "BLUE: Vesting Contract Already Initialized!");
+
         vestingContract = newVestingContract;
+
+        initialized = true;
     }
 }

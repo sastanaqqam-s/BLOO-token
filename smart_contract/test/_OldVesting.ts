@@ -1,3 +1,5 @@
+/** @format */
+
 // /** @format */
 
 // import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
@@ -6,7 +8,7 @@
 // import { basicMethod, decimal, forSecond } from "./index";
 
 // describe("Basic Contract", () => {
-//   it.only("Should check Message ", async () => {
+//   it("Should check Message ", async () => {
 //     const { deployer, token, vesting } = await loadFixture(basicMethod);
 
 //     await vesting.start();
