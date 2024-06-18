@@ -121,12 +121,10 @@ contract Vesting is Inventory, ReentrancyGuard {
             if (totalCompletedMonths > cliffMonth) {
                 skipMonths = totalCompletedMonths - claimedMonth[i];
 
-                if (totalCompletedMonths <= vestedMonth) {
-                    if (totalCompletedMonths < vestedMonth) {
-                        unlockingToken = c1.avgReleasedToken * skipMonths;
-                    } else {
-                        unlockingToken = c1.remainReleasedToken;
-                    }
+                if (totalCompletedMonths < vestedMonth) {
+                    unlockingToken = c1.avgReleasedToken * skipMonths;
+                } else {
+                    unlockingToken = c1.remainReleasedToken;
                 }
 
                 claimedMonth[i] = totalCompletedMonths;
