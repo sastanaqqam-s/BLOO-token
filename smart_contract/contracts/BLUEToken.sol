@@ -14,6 +14,7 @@ contract BLUEToken is IBLUEToken, ERC20 {
     // get log of old and new contract owner
     event TransferOwnership(address _oldOwner, address _newOwner);
 
+    // set max supply value in constructor
     uint256 public immutable max_supply;
 
     address public vestingContract;
