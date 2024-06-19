@@ -8,7 +8,7 @@ import "./Interface/IBLUEToken.sol";
 contract BLUEToken is IBLUEToken, ERC20 {
     bool public initialized;
 
-    // store owner address
+    // store owner address No need to implement Two-step Ownership Transfer Process, This Owner only used to set vesting contract address
     address public owner = msg.sender;
 
     // get log of old and new contract owner
