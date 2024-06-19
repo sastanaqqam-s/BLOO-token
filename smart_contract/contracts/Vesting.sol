@@ -170,7 +170,7 @@ contract Vesting is Inventory {
         emit TokenTransfer(from, to, amount);
     }
 
-    // Function to get all users with their addresses and total token amounts
+    // The user base is expected to remain within a manageable size, ensuring that the gas limit will not be exceeded when retrieving the entire list of users.
     function allusers() external view returns (TokenHolders[] memory) {
         return tokenHolders;
     }
