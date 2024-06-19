@@ -47,7 +47,7 @@ describe("BLUETOKEN Contract", () => {
       );
     });
 
-    it("should check if caller is vesting contract or not", async () => {
+    it("should check if supply overflow", async () => {
       const { deployer } = await loadFixture(basicMethod);
 
       // Deploy Token Contract
@@ -114,6 +114,23 @@ describe("BLUETOKEN Contract", () => {
       const { token } = await loadFixture(basicMethod);
 
       expect(await token.initialized()).to.equal(true);
+    });
+
+    it("should check event", async () => {
+      const { deployer, vesting } = await loadFixture(basicMethod);
+
+      // Deploy Token Contract
+      const Token = await ethers.getContractFactory("BLUEToken");
+      const token = await Token.deploy(
+        "BLUE token",
+        "BLUE",
+        decimal(5000000000),
+      );
+      let event = await token.setVestingcontract(vesting.address);
+
+      expect(event)
+        .to.emit(token, "SetVestingcontract")
+        .withArgs(deployer.address, vesting.address);
     });
 
     describe("Revert Condition in Set Vesting Contract method", () => {

@@ -3,6 +3,8 @@
 pragma solidity 0.8.20;
 
 interface IBLUEToken {
+    event SetVestingcontract(address setBy, address vestingContract);
+
     function max_supply() external view returns (uint256);
 
     function mint(address walletAddress, uint256 amount) external;

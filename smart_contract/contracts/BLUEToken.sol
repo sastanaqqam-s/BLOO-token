@@ -64,5 +64,7 @@ contract BLUEToken is IBLUEToken, ERC20 {
         vestingContract = newVestingContract;
 
         initialized = true;
+
+        emit SetVestingcontract(msg.sender, vestingContract);
     }
 }
