@@ -412,7 +412,7 @@ describe("Vesting Contract", () => {
       });
       it("Should check unlocked tokens ", async () => {
         const { deployer, vesting, admins } = await loadFixture(basicMethod);
-        const Tokens = decimal(130250000);
+        const Tokens = decimal(368000000);
         await vesting.connect(deployer).start();
         await vesting.transferToken(admins[0].address, Tokens);
 

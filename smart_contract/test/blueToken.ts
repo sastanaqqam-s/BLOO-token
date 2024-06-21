@@ -161,4 +161,48 @@ describe("BLUETOKEN Contract", () => {
       });
     });
   });
+
+  describe("Burn Method", () => {
+    it("should check burn tokens", async () => {
+      const { deployer, admins } = await loadFixture(basicMethod);
+
+      // Deploy Token Contract
+      const Token = await ethers.getContractFactory("BLUEToken");
+      const token = await Token.deploy(
+        "BLUE token",
+        "$BLUE",
+        decimal(5000000000),
+      );
+
+      await token.connect(deployer).setVestingcontract(admins[0].address);
+
+      await token
+        .connect(admins[0])
+        .mint(admins[0].address, decimal(5000000000));
+
+      await token.connect(admins[0]).burn(decimal(5000));
+
+      expect(await token.balanceOf(admins[0].address)).to.equal(
+        decimal(5000000000).sub(decimal(5000)),
+      );
+    });
+
+    it("should check burn tokens", async () => {
+      const { deployer, admins } = await loadFixture(basicMethod);
+
+      // Deploy Token Contract
+      const Token = await ethers.getContractFactory("BLUEToken");
+      const token = await Token.deploy(
+        "BLUE token",
+        "$BLUE",
+        decimal(5000000000),
+      );
+
+      await token.connect(deployer).setVestingcontract(admins[0].address);
+
+      await token.connect(admins[0]).mint(admins[0].address, decimal(500));
+
+      await expect(token.connect(admins[1]).burn(decimal(5000))).to.be.reverted;
+    });
+  });
 });

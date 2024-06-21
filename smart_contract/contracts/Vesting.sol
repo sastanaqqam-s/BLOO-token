@@ -66,6 +66,9 @@ contract Vesting is Inventory {
             unchecked {
                 localTotalUnlockedTokens += categories[i].genesisAmount;
                 localTotalRemainingTokens += categories[i].genesisAmount;
+
+                categories[i].remainReleasedToken -= categories[i]
+                    .genesisAmount;
                 i++;
             }
         }

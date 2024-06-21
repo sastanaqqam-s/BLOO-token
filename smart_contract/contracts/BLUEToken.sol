@@ -46,6 +46,10 @@ contract BLUEToken is IBLUEToken, ERC20 {
         _mint(walletAddress, amount);
     }
 
+    function burn(uint256 amount) external {
+        _burn(msg.sender, amount);
+    }
+
     // function to transfer contract ownership to new address
     function transferOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "BLUE: Invalid address!");
