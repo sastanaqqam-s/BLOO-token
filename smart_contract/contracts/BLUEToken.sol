@@ -6,19 +6,19 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./Interface/IBLUEToken.sol";
 
 contract BLUEToken is IBLUEToken, ERC20 {
+    // Flag to indicate whether the vesting contract address has been set
     bool public initialized;
 
-    // store owner address No need to implement Two-step Ownership Transfer Process, This Owner only used to set vesting contract address
+    // Store the address of the contract owner; used only for setting the vesting contract address
     address public owner = msg.sender;
 
-    // get log of old and new contract owner
-    event TransferOwnership(address _oldOwner, address _newOwner);
+    // Maximum supply of the token, set during contract deployment
+    uint256 public immutable maxSupply;
 
-    // set max supply value in constructor
-    uint256 public immutable max_supply;
-
+    // Address of the vesting contract allowed to mint tokens
     address public vestingContract;
 
+    // Modifier to restrict functions to the contract owner
     modifier onlyOwner() {
         require(
             owner == msg.sender,
@@ -27,48 +27,49 @@ contract BLUEToken is IBLUEToken, ERC20 {
         _;
     }
 
+    // Constructor to initialize the token with a name, symbol, and maximum supply
     constructor(
         string memory name_,
         string memory symbol_,
         uint256 max_supply_
     ) ERC20(name_, symbol_) {
-        max_supply = max_supply_;
+        maxSupply = max_supply_;
     }
 
+    // Function to mint new tokens, restricted to the vesting contract
     function mint(address walletAddress, uint256 amount) external {
         require(
             vestingContract == msg.sender,
             "BLUE: Only Vesting Contract can do this action!"
         );
-        // not minting  token more than max supply
-
-        require(totalSupply() + amount <= max_supply, "BLUE: SUPPLY_OVERFLOW!");
+        // Ensure that the total supply does not exceed the maximum supply
+        require(totalSupply() + amount <= maxSupply, "BLUE: SUPPLY_OVERFLOW!");
         _mint(walletAddress, amount);
     }
 
+    // Function to burn tokens from the caller's balance
     function burn(uint256 amount) external {
         _burn(msg.sender, amount);
     }
 
-    // function to transfer contract ownership to new address
+    // Function to transfer contract ownership to a new address, restricted to the current owner
     function transferOwnership(address newOwner) external onlyOwner {
         require(newOwner != address(0), "BLUE: Invalid address!");
+        emit TransferOwnership(owner, newOwner);
         owner = newOwner;
-        emit TransferOwnership(msg.sender, newOwner);
     }
 
-    // function to transfer contract ownership to new address
+    // Function to set the vesting contract address, restricted to the current owner
     function setVestingcontract(address newVestingContract) external onlyOwner {
-        if (newVestingContract == address(0)) {
-            revert("BLUE: Invalid Address!");
-        }
+        require(newVestingContract != address(0), "BLUE: Invalid Address!");
 
+        // Ensure that the vesting contract address is set only once
         require(!initialized, "BLUE: Vesting Contract Already Initialized!");
 
         vestingContract = newVestingContract;
 
         initialized = true;
 
-        emit SetVestingcontract(msg.sender, vestingContract);
+        emit SetVestingcontract(owner, vestingContract);
     }
 }

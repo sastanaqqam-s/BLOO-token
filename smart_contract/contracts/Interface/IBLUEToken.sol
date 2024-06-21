@@ -3,9 +3,19 @@
 pragma solidity 0.8.20;
 
 interface IBLUEToken {
-    event SetVestingcontract(address setBy, address vestingContract);
+    // Event emitted when the contract ownership is transferred to a new owner
+    event TransferOwnership(
+        address indexed _oldOwner,
+        address indexed _newOwner
+    );
 
-    function max_supply() external view returns (uint256);
+    // Event emitted when the vesting contract address is set
+    event SetVestingcontract(
+        address indexed _owner,
+        address indexed _vestingContract
+    );
+
+    function maxSupply() external view returns (uint256);
 
     function mint(address walletAddress, uint256 amount) external;
 

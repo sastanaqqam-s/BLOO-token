@@ -1,53 +1,54 @@
 /** @format */
+
+/** @format */
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { basicMethod, decimal } from "./index";
+import { basicMethod, decimal, big } from "./index";
 
-describe("BLUETOKEN Contract", () => {
-  describe("Deployment", () => {
-    it("Deployment should assign the correct initial values", async () => {
-      const { deployer } = await loadFixture(basicMethod);
-      const Tokens = await ethers.getContractFactory("BLUEToken");
-      const tokens = await Tokens.deploy(
-        "BLUE token",
-        "BLUE",
-        decimal(5000000000),
-      );
+describe("BLUE Token Contract", () => {
+  describe("Constructor Detail", () => {
+    it("Should check to assign the correct state values", async () => {
+      const { deployer, token } = await loadFixture(basicMethod);
 
-      expect(await tokens.name()).to.equal("BLUE token");
-      expect(await tokens.symbol()).to.equal("BLUE");
-      expect(await tokens.decimals()).to.equal(18);
-      expect(await tokens.owner()).to.equal(deployer.address);
+      expect(await token.name()).to.equal("BLUE token");
+      expect(await token.symbol()).to.equal("$BLUE");
+      expect(await token.decimals()).to.equal(big(18));
+      expect(await token.maxSupply()).to.equal(decimal(5000000000));
+      expect(await token.initialized()).to.equal(true);
+
+      expect(await token.owner()).to.equal(deployer.address);
     });
   });
 
   describe("Mint Method", () => {
-    it("should mint tokens by vesting contract", async () => {
-      const tokenAmount = decimal(1);
-      const { deployer, token, vesting, admins } = await loadFixture(
-        basicMethod,
-      );
-      await vesting.connect(deployer).start();
-      const BeforeRemainingTokens = await vesting.totalRemainingTokens();
+    it("should check mint tokens and Balance of Minter", async () => {
+      const { deployer, admins } = await loadFixture(basicMethod);
 
-      await vesting.transferToken(admins[0].address, tokenAmount);
-
-      expect(await vesting.totalRemainingTokens()).to.be.equal(
-        BeforeRemainingTokens.sub(tokenAmount),
+      // Deploy Token Contract
+      const Token = await ethers.getContractFactory("BLUEToken");
+      const token = await Token.deploy(
+        "BLUE token",
+        "$BLUE",
+        decimal(5000000000),
       );
-      expect(await vesting.totalCompletedMonths()).to.be.equal(0);
-      expect(await token.balanceOf(admins[0].address)).be.equal(tokenAmount);
+
+      await token.connect(deployer).setVestingcontract(admins[0].address);
+
+      await token.connect(admins[0]).mint(admins[1].address, decimal(5000));
+
+      expect(await token.balanceOf(admins[1].address)).to.equal(decimal(5000));
     });
 
-    it("should check if caller is vesting contract or not", async () => {
+    it("should check Revert if caller is vesting contract or not", async () => {
       const { admins, token } = await loadFixture(basicMethod);
+
       await expect(token.mint(admins[0].address, 1)).to.be.revertedWith(
         "BLUE: Only Vesting Contract can do this action!",
       );
     });
 
-    it("should check if supply overflow", async () => {
+    it("should check Revert if supply overflow", async () => {
       const { deployer } = await loadFixture(basicMethod);
 
       // Deploy Token Contract
@@ -63,6 +64,50 @@ describe("BLUETOKEN Contract", () => {
       await expect(
         token.mint(deployer.address, decimal(5000000001)),
       ).to.be.revertedWith("BLUE: SUPPLY_OVERFLOW!");
+    });
+  });
+
+  describe("Burn Method", () => {
+    it("should check burn tokens", async () => {
+      const { deployer, admins } = await loadFixture(basicMethod);
+
+      // Deploy Token Contract
+      const Token = await ethers.getContractFactory("BLUEToken");
+      const token = await Token.deploy(
+        "BLUE token",
+        "$BLUE",
+        decimal(5000000000),
+      );
+
+      await token.connect(deployer).setVestingcontract(admins[0].address);
+
+      await token
+        .connect(admins[0])
+        .mint(admins[0].address, decimal(5000000000));
+
+      await token.connect(admins[0]).burn(decimal(5000));
+
+      expect(await token.balanceOf(admins[0].address)).to.equal(
+        decimal(5000000000).sub(decimal(5000)),
+      );
+    });
+
+    it("should check burn tokens", async () => {
+      const { deployer, admins } = await loadFixture(basicMethod);
+
+      // Deploy Token Contract
+      const Token = await ethers.getContractFactory("BLUEToken");
+      const token = await Token.deploy(
+        "BLUE token",
+        "$BLUE",
+        decimal(5000000000),
+      );
+
+      await token.connect(deployer).setVestingcontract(admins[0].address);
+
+      await token.connect(admins[0]).mint(admins[0].address, decimal(500));
+
+      await expect(token.connect(admins[1]).burn(decimal(5000))).to.be.reverted;
     });
   });
 
@@ -159,50 +204,6 @@ describe("BLUETOKEN Contract", () => {
             .setVestingcontract("0x0000000000000000000000000000000000000000"),
         ).to.be.revertedWith("BLUE: Invalid Address!");
       });
-    });
-  });
-
-  describe("Burn Method", () => {
-    it("should check burn tokens", async () => {
-      const { deployer, admins } = await loadFixture(basicMethod);
-
-      // Deploy Token Contract
-      const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "$BLUE",
-        decimal(5000000000),
-      );
-
-      await token.connect(deployer).setVestingcontract(admins[0].address);
-
-      await token
-        .connect(admins[0])
-        .mint(admins[0].address, decimal(5000000000));
-
-      await token.connect(admins[0]).burn(decimal(5000));
-
-      expect(await token.balanceOf(admins[0].address)).to.equal(
-        decimal(5000000000).sub(decimal(5000)),
-      );
-    });
-
-    it("should check burn tokens", async () => {
-      const { deployer, admins } = await loadFixture(basicMethod);
-
-      // Deploy Token Contract
-      const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "$BLUE",
-        decimal(5000000000),
-      );
-
-      await token.connect(deployer).setVestingcontract(admins[0].address);
-
-      await token.connect(admins[0]).mint(admins[0].address, decimal(500));
-
-      await expect(token.connect(admins[1]).burn(decimal(5000))).to.be.reverted;
     });
   });
 });

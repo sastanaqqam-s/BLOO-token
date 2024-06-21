@@ -3,22 +3,9 @@ pragma solidity 0.8.20;
 
 import "./Inventory/Inventory.sol";
 
-// Struct to store the address and token details of transfers made by the owner
-struct TokenHolders {
-    address users; // Address of the user
-    uint256 tokens; // Number of tokens transferred
-    uint time; // Timestamp of the transfer
-}
-
 // Vesting contract inheriting from Inventory
 contract Vesting is Inventory {
-    // Event to log token transfers
-    event TokenTransfer(address from, address to, uint amount);
-
-    uint256 private constant releaseInterval = 30 days;
-
-    // Array to store user addresses and token details transferred by admins
-    TokenHolders[] public tokenHolders;
+    uint256 private constant releaseInterval = 30 days; // Interval for token release in days
 
     // Constructor initializing the contract with fee token, MPC addresses, and category data
     constructor(
@@ -26,13 +13,14 @@ contract Vesting is Inventory {
         address[] memory mpcAddresses,
         Category[] memory data
     ) {
+        // Ensure the fee token address is valid
         if (address(_feeToken) == address(0)) {
             revert("Vesting: Invalid FeeToken Address!");
         }
 
         feeToken = _feeToken;
 
-        // Add MPC  addresses to the whitelist
+        // Add MPC addresses to the whitelist
         for (uint i = 0; i < mpcAddresses.length; i++) {
             if (mpcAddresses[i] == address(0)) {
                 revert("Vesting: Invalid MPC Address!");
@@ -46,8 +34,9 @@ contract Vesting is Inventory {
         setCategory(data);
     }
 
-    // Function  to start the tokenization process,  only callable by whitelisted addresses
+    // Function to start the tokenization process, only callable by whitelisted addresses
     function start() external onlyWhiteListed {
+        // Ensure tokenization has not already started
         require(startAt == 0, "Vesting: Tokenization already Started!");
 
         // Set the start time of tokenization
@@ -57,34 +46,32 @@ contract Vesting is Inventory {
         _releasedGenesisAmt();
     }
 
-    // Internal function to release initial genesis amount of tokens
+    // Internal function to release the initial genesis amount of tokens
     function _releasedGenesisAmt() private {
-        uint localTotalUnlockedTokens;
-        uint localTotalRemainingTokens;
-
+        uint totalToken;
         for (uint i = 0; i < categories.length; ) {
-            unchecked {
-                localTotalUnlockedTokens += categories[i].genesisAmount;
-                localTotalRemainingTokens += categories[i].genesisAmount;
+            Category memory c1 = categories[i];
 
-                categories[i].remainReleasedToken -= categories[i]
-                    .genesisAmount;
+            totalToken = c1.genesisAmount;
+
+            if (totalToken > 0) {
+                c1.totalRemainingTokens -= totalToken;
+                categories[i] = c1;
+
+                // Mint tokens to the beneficiary
+                _mintTokens(i, msg.sender, c1.beneficiary, totalToken);
+            }
+
+            unchecked {
                 i++;
             }
         }
-
-        totalUnlockedTokens += localTotalUnlockedTokens;
-        totalRemainingTokens += localTotalRemainingTokens;
     }
 
     // Function to transfer tokens to multiple users, only callable by whitelisted addresses
-    function multiTransferToken(
-        address[] memory users,
-        uint amount
-    ) external onlyWhiteListed {
-        require(amount > 0, "Vesting: Invalid tokenAmount");
-        for (uint256 i = 0; i < users.length; ) {
-            transferToken(users[i], amount);
+    function released() external {
+        for (uint i = 0; i < categories.length; ) {
+            releasedCategoryToken(i);
 
             unchecked {
                 i++;
@@ -92,88 +79,92 @@ contract Vesting is Inventory {
         }
     }
 
-    // Function to transfer tokens to a single user, only callable by whitelisted addresses
-    function transferToken(
-        address userAddress,
-        uint tokenAmount
-    ) public onlyWhiteListed {
-        calulateUnlockedToken();
+    // Function to transfer tokens to a single user based on category, only callable by whitelisted addresses
+    function releasedCategoryToken(uint categoryId) public {
+        // Ensure distribution has started
         require(startAt > 0, "Vesting: Distribution not started yet!");
-        require(tokenAmount > 0, "Vesting: Invalid tokenAmount");
+
+        Category memory c1 = categories[categoryId];
+
+        uint unlockingTokens = calculateUnlockedToken(categoryId, c1);
 
         // Check if enough tokens are unlocked for transfer
-        require(
-            totalRemainingTokens >= tokenAmount,
-            "Vesting: Not enough tokens have been unlocked at the moment!"
-        );
+        if (unlockingTokens > 0) {
+            c1.totalRemainingTokens -= unlockingTokens;
 
-        // Mint tokens to the user
-        _mintTokens(msg.sender, userAddress, tokenAmount);
+            categories[categoryId] = c1;
+
+            // Mint tokens to the user
+            _mintTokens(
+                categoryId,
+                msg.sender,
+                c1.beneficiary,
+                unlockingTokens
+            );
+        }
     }
 
     // Internal function to calculate unlocked tokens based on completed months
-    function calulateUnlockedToken() private {
+    function calculateUnlockedToken(
+        uint categoryId,
+        Category memory c1
+    ) private returns (uint unlockingToken) {
         uint completedMonth = (block.timestamp - startAt) / releaseInterval;
 
-        if (completedMonth > totalCompletedMonths) {
-            totalCompletedMonths = completedMonth;
-            _checkVestedPeriod();
+        if (completedMonth > totalCompletedMonths[categoryId]) {
+            totalCompletedMonths[categoryId] = completedMonth;
+            unlockingToken = _checkVestedPeriod(
+                categoryId,
+                totalCompletedMonths[categoryId],
+                c1
+            );
         }
     }
 
     // Internal function to check and release tokens according to vested periods
-    function _checkVestedPeriod() private {
-        uint localTotalUnlockedTokens;
-        uint localTotalRemainingTokens;
+    function _checkVestedPeriod(
+        uint categoryId,
+        uint completedMonths,
+        Category memory c1
+    ) private returns (uint unlockingToken) {
+        uint cliffMonth = c1.lockedPeriod;
+        uint vestedMonth = cliffMonth + c1.vestingPeriod;
+        uint skipMonths = 0;
 
-        for (uint i = 0; i < categories.length; ) {
-            Category memory c1 = categories[i];
-            uint cliffMonth = c1.lockedPeriod;
-            uint vestedMonth = cliffMonth + c1.vestingPeriod;
-            uint unlockingToken = 0;
-            uint skipMonths = 0;
+        // Check if the completed month is within the vested period
+        if (completedMonths > cliffMonth) {
+            skipMonths = completedMonths - claimedMonth[categoryId];
 
-            // Check if completed month is within the vested period
-            if (totalCompletedMonths > cliffMonth) {
-                skipMonths = totalCompletedMonths - claimedMonth[i];
-
-                if (totalCompletedMonths < vestedMonth) {
-                    unlockingToken = c1.avgReleasedToken * skipMonths;
-                } else {
-                    unlockingToken = c1.remainReleasedToken;
-                }
-
-                claimedMonth[i] = totalCompletedMonths;
-
-                localTotalUnlockedTokens += unlockingToken;
-                localTotalRemainingTokens += unlockingToken;
-                c1.remainReleasedToken -= unlockingToken;
-
-                categories[i] = c1;
+            if (completedMonths < vestedMonth) {
+                unlockingToken = c1.avgReleasedToken * skipMonths;
+            } else {
+                unlockingToken = c1.totalRemainingTokens;
             }
 
-            unchecked {
-                i++;
-            }
+            claimedMonth[categoryId] = completedMonths;
         }
 
-        totalUnlockedTokens += localTotalUnlockedTokens;
-        totalRemainingTokens += localTotalRemainingTokens;
+        return unlockingToken;
     }
 
     // Internal function to mint tokens to a user
-    function _mintTokens(address from, address to, uint256 amount) private {
-        totalRemainingTokens -= amount;
-
+    function _mintTokens(
+        uint categoryId,
+        address from,
+        address to,
+        uint256 amount
+    ) private {
         // Log token transfer
-        tokenHolders.push(TokenHolders(to, amount, block.timestamp));
+        tokenHolders.push(
+            TokenHolders(categoryId, to, amount, block.timestamp)
+        );
 
         feeToken.mint(to, amount);
 
         emit TokenTransfer(from, to, amount);
     }
 
-    // The user base is expected to remain within a manageable size, ensuring that the gas limit will not be exceeded when retrieving the entire list of users.
+    // Function to retrieve the entire list of users and their token holding details
     function allusers() external view returns (TokenHolders[] memory) {
         return tokenHolders;
     }
