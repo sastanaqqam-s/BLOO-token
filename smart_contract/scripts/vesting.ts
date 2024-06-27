@@ -133,35 +133,45 @@ async function main() {
   const Token = await ethers.getContractFactory("BLUEToken");
   const token = await Token.deploy("BLUE token", "BLUE", decimal(5000000000));
 
+  console.log("BLUE Token Contract Address-> ", token.address);
+
   await token.deployTransaction.wait(5);
 
   await hre.run("verify:verify", {
     address: token.address,
     contract: "contracts/BLUEToken.sol:BLUEToken",
-    constructorArguments: ["BLUE token", "BLUE"],
+    constructorArguments: ["BLUE token", "BLUE", decimal(5000000000)],
   });
 
-  let deployerAddress = ["0x0000000000000000000000000000000000000000"];
   // Deploy Token Contract
   const Vesting = await ethers.getContractFactory("Vesting");
   const vesting = await Vesting.deploy(
     token.address,
-    deployerAddress,
+    [
+      "0x0000000000000000000000000000000000000000",
+      "0x0000000000000000000000000000000000000000",
+    ],
     category,
   );
 
+  console.log("Vesting Contract Address-> ", vesting.address);
+
   await vesting.deployTransaction.wait(5);
+
+  await token.setVestingcontract(vesting.address);
 
   await hre.run("verify:verify", {
     address: vesting.address,
     contract: "contracts/Vesting.sol:Vesting",
-    constructorArguments: [token.address, deployerAddress, category],
+    constructorArguments: [
+      token.address,
+      [
+        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000",
+      ],
+      category,
+    ],
   });
-
-  await token.setVestingcontract(vesting.address);
-
-  console.log("BLUE Token Contract Address-> ", token.address);
-  console.log("Vesting Contract Address-> ", vesting.address);
 }
 
 main()
@@ -176,5 +186,5 @@ function decimal(value: any) {
   return BigNumber.from(value).mul(powValue);
 }
 
-// BLUE Token Contract Address->  0x75e03bA9C2050a544b79965C7FaABb66BBeC6f8b
-// Vesting Contract Address->  0x51555E463120A9d92947E37c2088f3e842Be190d
+// BLUE Token Contract Address->
+// Vesting Contract Address->

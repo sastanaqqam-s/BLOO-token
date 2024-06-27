@@ -36,7 +36,22 @@ contract Inventory {
     // Event to log token transfers
     event TokenTransfer(address from, address to, uint amount);
 
+    // Event emitted when the contract ownership is transferred to a new owner
+    event TransferOwnership(
+        address indexed _oldOwner,
+        address indexed _newOwner
+    );
+
+    event UpdateWhiteListedAddress(
+        address whiteListedAddress,
+        bool status,
+        address setBy
+    );
+
     IBLUEToken public feeToken; // Interface for the fee token contract
+
+    // Store the address of the contract owner; used only for setting the vesting contract address
+    address public owner = msg.sender;
 
     uint public startAt; // Start time for the distribution
 
@@ -52,6 +67,15 @@ contract Inventory {
 
     // Array to store user addresses and token details transferred by admins
     TokenHolders[] public tokenHolders;
+
+    // Modifier to restrict functions to the contract owner
+    modifier onlyOwner() {
+        require(
+            owner == msg.sender,
+            "Vesting: Only Owner can perform this action!"
+        );
+        _;
+    }
 
     // Modifier to restrict access to only whitelisted addresses
     modifier onlyWhiteListed() {
@@ -132,5 +156,28 @@ contract Inventory {
             msg.sender,
             block.timestamp
         );
+    }
+
+    // Function to update the beneficiary of a specific category
+    function updateWhiteListedAddress(
+        address whiteListedAddress,
+        bool status
+    ) external onlyOwner {
+        // Validate the new beneficiary address
+        if (whiteListedAddress == address(0)) {
+            revert("Vesting: Invalid White Listed address!");
+        }
+
+        whiteListed[whiteListedAddress] = status;
+
+        // Emit an event to log the update
+        emit UpdateWhiteListedAddress(whiteListedAddress, status, msg.sender);
+    }
+
+    // Function to transfer contract ownership to a new address, restricted to the current owner
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "Vesting: Invalid address!");
+        emit TransferOwnership(owner, newOwner);
+        owner = newOwner;
     }
 }

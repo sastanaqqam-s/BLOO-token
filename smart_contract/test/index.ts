@@ -14,7 +14,7 @@ let currentTime = big(Math.floor(new Date().getTime() / 1000)).add(40);
 
 export async function basicMethod() {
   // random address
-  const [deployer, ...admins] = await ethers.getSigners();
+  const [deployer, whiteListed, ...admins] = await ethers.getSigners();
 
   var category = [
     {
@@ -148,7 +148,7 @@ export async function basicMethod() {
   const Vesting = await ethers.getContractFactory("Vesting");
   const vesting = await Vesting.deploy(
     token.address,
-    [deployer.address],
+    [deployer.address, whiteListed.address],
     category,
   );
 
@@ -156,6 +156,8 @@ export async function basicMethod() {
 
   return {
     deployer,
+    whiteListed,
+
     token,
     admins,
     vesting,

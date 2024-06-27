@@ -319,16 +319,18 @@ describe("Vesting Contract", () => {
     });
 
     it("Should check White Listed Address Status", async () => {
-      const { vesting, deployer } = await loadFixture(basicMethod);
+      const { vesting, deployer, whiteListed } = await loadFixture(basicMethod);
 
       expect(await vesting.whiteListed(deployer.address)).to.equal(true);
+      expect(await vesting.whiteListed(whiteListed.address)).to.equal(true);
     });
 
     it("Should check All White Listed Address", async () => {
-      const { vesting, deployer } = await loadFixture(basicMethod);
+      const { vesting, deployer, whiteListed } = await loadFixture(basicMethod);
 
       expect(await vesting.getAllWhiteListed()).to.deep.members([
         deployer.address,
+        whiteListed.address,
       ]);
     });
 
@@ -902,6 +904,131 @@ describe("Vesting Contract", () => {
       await expect(vesting.released()).to.revertedWith(
         "Vesting: Distribution not started yet!",
       );
+    });
+  });
+
+  describe("Update White Listed Address method", () => {
+    describe("Revert", () => {
+      it("should check if caller is owner or not", async () => {
+        const { admins, vesting } = await loadFixture(basicMethod);
+
+        await expect(
+          vesting.connect(admins[0]).transferOwnership(admins[0].address),
+        ).to.be.revertedWith("Vesting: Only Owner can perform this action!");
+      });
+      it("should check invalid address", async () => {
+        const { vesting } = await loadFixture(basicMethod);
+        await expect(
+          vesting.transferOwnership(ethers.constants.AddressZero),
+        ).to.be.revertedWith("Vesting: Invalid address!");
+      });
+    });
+    it("should transfer ownership", async () => {
+      const { deployer, admins, vesting } = await loadFixture(basicMethod);
+
+      // Before transferring ownership
+      expect(await vesting.owner()).to.be.equal(deployer.address);
+      await vesting.transferOwnership(admins[0].address);
+
+      // After transferring ownership
+      expect(await vesting.owner()).to.be.equal(admins[0].address);
+    });
+    it("should check event transfer ownership", async () => {
+      const { deployer, admins, vesting } = await loadFixture(basicMethod);
+
+      const event = await vesting.transferOwnership(admins[0].address);
+
+      await expect(event)
+        .to.emit(vesting, "TransferOwnership")
+        .withArgs(deployer.address, admins[0].address);
+    });
+  });
+
+  describe("Transfer Ownership method", () => {
+    describe("Revert", () => {
+      it("should check if caller is owner or not", async () => {
+        const { admins, vesting } = await loadFixture(basicMethod);
+
+        await expect(
+          vesting.connect(admins[0]).transferOwnership(admins[0].address),
+        ).to.be.revertedWith("Vesting: Only Owner can perform this action!");
+      });
+      it("should check invalid address", async () => {
+        const { vesting } = await loadFixture(basicMethod);
+        await expect(
+          vesting.transferOwnership(ethers.constants.AddressZero),
+        ).to.be.revertedWith("Vesting: Invalid address!");
+      });
+    });
+    it("should transfer ownership", async () => {
+      const { deployer, admins, vesting } = await loadFixture(basicMethod);
+
+      // Before transferring ownership
+      expect(await vesting.owner()).to.be.equal(deployer.address);
+      await vesting.transferOwnership(admins[0].address);
+
+      // After transferring ownership
+      expect(await vesting.owner()).to.be.equal(admins[0].address);
+    });
+    it("should check event transfer ownership", async () => {
+      const { deployer, admins, vesting } = await loadFixture(basicMethod);
+
+      const event = await vesting.transferOwnership(admins[0].address);
+
+      await expect(event)
+        .to.emit(vesting, "TransferOwnership")
+        .withArgs(deployer.address, admins[0].address);
+    });
+  });
+
+  describe("Update White Listed Address method", () => {
+    it("should check add whitelisted address", async () => {
+      const { deployer, admins, vesting, whiteListed } = await loadFixture(
+        basicMethod,
+      );
+
+      await vesting.updateWhiteListedAddress(admins[0].address, true);
+      expect(await vesting.whiteListed(admins[0].address)).to.equal(true);
+    });
+
+    it("should check remove whitelisted address", async () => {
+      const { deployer, admins, vesting, whiteListed } = await loadFixture(
+        basicMethod,
+      );
+
+      await vesting.updateWhiteListedAddress(whiteListed.address, false);
+      expect(await vesting.whiteListed(whiteListed.address)).to.equal(false);
+    });
+    it("should check event transfer ownership", async () => {
+      const { deployer, admins, vesting } = await loadFixture(basicMethod);
+
+      const event = await vesting.updateWhiteListedAddress(
+        admins[0].address,
+        true,
+      );
+
+      await expect(event)
+        .to.emit(vesting, "UpdateWhiteListedAddress")
+        .withArgs(admins[0].address, true, deployer.address);
+    });
+
+    describe("Revert Condition for Update White Listed Address", () => {
+      it("should check if caller is owner or not", async () => {
+        const { admins, vesting, whiteListed } = await loadFixture(basicMethod);
+
+        await expect(
+          vesting
+            .connect(admins[0])
+            .updateWhiteListedAddress(whiteListed.address, false),
+        ).to.be.revertedWith("Vesting: Only Owner can perform this action!");
+      });
+
+      it("should check invalid address", async () => {
+        const { vesting } = await loadFixture(basicMethod);
+        await expect(
+          vesting.updateWhiteListedAddress(ethers.constants.AddressZero, false),
+        ).to.be.revertedWith("Vesting: Invalid White Listed address!");
+      });
     });
   });
 });
