@@ -20,6 +20,10 @@ contract Vesting is Inventory {
 
         feeToken = _feeToken;
 
+        if (mpcAddresses.length == 0) {
+            revert("Vesting: MPC Address Length is 0!");
+        }
+
         // Add MPC addresses to the whitelist
         for (uint i = 0; i < mpcAddresses.length; i++) {
             if (mpcAddresses[i] == address(0)) {
