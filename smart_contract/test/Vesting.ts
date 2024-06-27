@@ -24,6 +24,17 @@ describe("Vesting Contract", () => {
       ).to.be.revertedWith("Vesting: Invalid FeeToken Address!");
     });
 
+    it("should check mpc wallet address length is 0", async () => {
+      const { deployer, token, category } = await loadFixture(basicMethod);
+
+      // Deploy Vesting Contract
+      const Vesting = await ethers.getContractFactory("Vesting");
+
+      await expect(
+        Vesting.deploy(deployer.address, [], category),
+      ).to.be.revertedWith("Vesting: MPC Address Length is 0!");
+    });
+
     it("should check mpc wallet address invalid", async () => {
       const { deployer, token, category } = await loadFixture(basicMethod);
 
