@@ -154,7 +154,7 @@ var category = [
 async function main() {
   // Deploy Token Contract
   const Token = await ethers.getContractFactory("BLUEToken");
-  const token = await Token.deploy("BLUE token", "BLUE", decimal(5000000000));
+  const token = await Token.deploy("BLUE token", "BLUE");
 
   await token.deployTransaction.wait(5);
 

@@ -9,11 +9,7 @@ describe("BLUETOKEN Contract", () => {
     it("Deployment should assign the correct initial values", async () => {
       const { deployer } = await loadFixture(basicMethod);
       const Tokens = await ethers.getContractFactory("BLUEToken");
-      const tokens = await Tokens.deploy(
-        "BLUE token",
-        "BLUE",
-        decimal(5000000000),
-      );
+      const tokens = await Tokens.deploy("BLUE token", "BLUE");
 
       expect(await tokens.name()).to.equal("BLUE token");
       expect(await tokens.symbol()).to.equal("BLUE");
@@ -52,11 +48,7 @@ describe("BLUETOKEN Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "BLUE");
 
       await token.setVestingcontract(deployer.address);
 
@@ -121,11 +113,7 @@ describe("BLUETOKEN Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "BLUE");
       let event = await token.setVestingcontract(vesting.address);
 
       expect(event)
@@ -168,11 +156,7 @@ describe("BLUETOKEN Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "$BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "$BLUE");
 
       await token.connect(deployer).setVestingcontract(admins[0].address);
 
@@ -192,11 +176,7 @@ describe("BLUETOKEN Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "$BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "$BLUE");
 
       await token.connect(deployer).setVestingcontract(admins[0].address);
 
