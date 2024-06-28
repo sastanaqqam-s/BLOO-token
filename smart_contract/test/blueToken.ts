@@ -27,11 +27,7 @@ describe("BLUE Token Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "$BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "$BLUE");
 
       await token.connect(deployer).setVestingcontract(admins[0].address);
 
@@ -53,11 +49,7 @@ describe("BLUE Token Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "BLUE");
 
       await token.setVestingcontract(deployer.address);
 
@@ -73,11 +65,7 @@ describe("BLUE Token Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "$BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "$BLUE");
 
       await token.connect(deployer).setVestingcontract(admins[0].address);
 
@@ -97,11 +85,7 @@ describe("BLUE Token Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "$BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "$BLUE");
 
       await token.connect(deployer).setVestingcontract(admins[0].address);
 
@@ -166,11 +150,7 @@ describe("BLUE Token Contract", () => {
 
       // Deploy Token Contract
       const Token = await ethers.getContractFactory("BLUEToken");
-      const token = await Token.deploy(
-        "BLUE token",
-        "BLUE",
-        decimal(5000000000),
-      );
+      const token = await Token.deploy("BLUE token", "BLUE");
       let event = await token.setVestingcontract(vesting.address);
 
       expect(event)

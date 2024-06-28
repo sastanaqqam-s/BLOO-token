@@ -13,7 +13,7 @@ contract BLUEToken is IBLUEToken, ERC20 {
     address public owner = msg.sender;
 
     // Maximum supply of the token, set during contract deployment
-    uint256 public immutable maxSupply;
+    uint256 public immutable maxSupply = 5_000_000_000 ether;
 
     // Address of the vesting contract allowed to mint tokens
     address public vestingContract;
@@ -30,11 +30,8 @@ contract BLUEToken is IBLUEToken, ERC20 {
     // Constructor to initialize the token with a name, symbol, and maximum supply
     constructor(
         string memory name_,
-        string memory symbol_,
-        uint256 max_supply_
-    ) ERC20(name_, symbol_) {
-        maxSupply = max_supply_;
-    }
+        string memory symbol_
+    ) ERC20(name_, symbol_) {}
 
     // Function to mint new tokens, restricted to the vesting contract
     function mint(address walletAddress, uint256 amount) external {
