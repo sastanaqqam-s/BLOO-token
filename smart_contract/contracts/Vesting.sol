@@ -24,6 +24,10 @@ contract Vesting is Inventory {
             revert("Vesting: MPC Address Length is 0!");
         }
 
+        if (data.length != 11) {
+            revert("Vesting: Category Length mismatch!");
+        }
+
         // Add MPC addresses to the whitelist
         for (uint i = 0; i < mpcAddresses.length; i++) {
             if (mpcAddresses[i] == address(0)) {
