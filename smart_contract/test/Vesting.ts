@@ -1059,6 +1059,20 @@ describe("Vesting Contract", () => {
         "Vesting: Distribution not started yet!",
       );
     });
+
+    it("Should check to Only Whitelisted Address Released Single Category Tokens", async () => {
+      const { deployer, admins, vesting, category } = await loadFixture(
+        basicMethod,
+      );
+
+      await vesting.connect(deployer).start();
+
+      await expect(
+        vesting.connect(admins[0]).releasedCategoryToken(8),
+      ).to.revertedWith(
+        "Vesting: Only Whitelisted Address can perform this action!",
+      );
+    });
   });
 
   describe("Released Category Token", () => {
@@ -1147,6 +1161,18 @@ describe("Vesting Contract", () => {
 
       await expect(vesting.released()).to.revertedWith(
         "Vesting: Distribution not started yet!",
+      );
+    });
+
+    it("Should check to Only Whitelisted Address Released Category Tokens", async () => {
+      const { deployer, admins, vesting, category } = await loadFixture(
+        basicMethod,
+      );
+
+      await vesting.connect(deployer).start();
+
+      await expect(vesting.connect(admins[0]).released()).to.revertedWith(
+        "Vesting: Only Whitelisted Address can perform this action!",
       );
     });
   });

@@ -7,7 +7,12 @@ import "./Inventory/Inventory.sol";
 contract Vesting is Inventory {
     uint256 private constant releaseInterval = 30 days; // Interval for token release in days
 
-    // Constructor initializing the contract with fee token, MPC addresses, and category data
+    /**
+     * Constructor for the vesting contract and set the fee token address and MPC addresses and category data
+     * @param _feeToken Fee token address
+     * @param mpcAddresses MPC addresses to be whitelisted
+     * @param data Category data to be set in the vesting contract
+     */
     constructor(
         IBLUEToken _feeToken,
         address[] memory mpcAddresses,
@@ -42,7 +47,14 @@ contract Vesting is Inventory {
         setCategory(data);
     }
 
-    // Function to start the tokenization process, only callable by whitelisted addresses
+    /**
+     * Function to start tokenization
+     * @notice The start time of tokenization is set to the current block timestamp
+     * @notice The genesis amount of tokens is released
+     * @notice Tokens are minted to the beneficiary
+     * @notice Only whitelisted MPC addresses can call this function
+     * @notice This function can only be called once
+     */
     function start() external onlyWhiteListed {
         // Ensure tokenization has not already started
         require(startAt == 0, "Vesting: Tokenization already Started!");
@@ -54,7 +66,9 @@ contract Vesting is Inventory {
         _releasedGenesisAmt();
     }
 
-    // Internal function to release the initial genesis amount of tokens
+    /**
+     * Internal function to release initial genesis amount of tokens
+     */
     function _releasedGenesisAmt() private {
         uint totalToken;
         for (uint i = 0; i < categories.length; ) {
@@ -76,7 +90,11 @@ contract Vesting is Inventory {
         }
     }
 
-    // Function to transfer tokens to multiple users, only callable by whitelisted addresses
+    /**
+     * @notice Tokens are released based on vesting period after completed cliff period of each category.
+     * @notice Only whitelisted MPC addresses can call this function
+     * @notice Tokens are minted to the beneficiary
+     */
     function released() external {
         for (uint i = 0; i < categories.length; ) {
             releasedCategoryToken(i);
@@ -87,8 +105,13 @@ contract Vesting is Inventory {
         }
     }
 
-    // Function to transfer tokens to a single user based on category, only callable by whitelisted addresses
-    function releasedCategoryToken(uint categoryId) public {
+    /**
+     * @dev This function is use to release tokens for a single category
+     * @param categoryId Category ID to be released based on vesting period after completed cliff period
+     * @notice Tokens are minted to the beneficiary
+     * @notice Only whitelisted MPC addresses can call this function
+     */
+    function releasedCategoryToken(uint categoryId) public onlyWhiteListed {
         // Ensure distribution has started
         require(startAt > 0, "Vesting: Distribution not started yet!");
 
@@ -112,7 +135,10 @@ contract Vesting is Inventory {
         }
     }
 
-    // Internal function to calculate unlocked tokens based on completed months
+    /**
+     * Internal function to calculate unlocked tokens
+     * @param categoryId Category ID to be released based on vesting period after completed cliff period
+     */
     function calculateUnlockedToken(
         uint categoryId,
         Category memory c1
@@ -155,7 +181,7 @@ contract Vesting is Inventory {
         return unlockingToken;
     }
 
-    // Internal function to mint tokens to a user
+    // Internal function to mint tokens to a beneficiary address based on category ID
     function _mintTokens(
         uint categoryId,
         address from,

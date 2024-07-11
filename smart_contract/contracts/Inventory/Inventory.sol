@@ -42,6 +42,7 @@ contract Inventory {
         address indexed _newOwner
     );
 
+    // Event emitted when the white listed address update
     event UpdateWhiteListedAddress(
         address whiteListedAddress,
         bool status,
@@ -158,12 +159,12 @@ contract Inventory {
         );
     }
 
-    // Function to update the beneficiary of a specific category
+    // Function to update the whitelisted address
     function updateWhiteListedAddress(
         address whiteListedAddress,
         bool status
     ) external onlyOwner {
-        // Validate the new beneficiary address
+        // Validate the new white listed address
         if (whiteListedAddress == address(0)) {
             revert("Vesting: Invalid White Listed address!");
         }
